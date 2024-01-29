@@ -1,12 +1,15 @@
-package com.javaex.author;
+package com.javaex.book;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-public class AuthorSelect {
+public class BookInsert {
 
 	public static void main(String[] args) {
 
-		// 번호 유영수 학원학생
 		// 0. import java.sql.*;
 		Connection conn = null;
 		PreparedStatement pstmt = null;
@@ -22,31 +25,20 @@ public class AuthorSelect {
 			// 3. SQL문 준비 / 바인딩 / 실행
 			// - sql문 준비
 			String query = "";
-			query += " select author_id, ";
-			query += "        author_name, ";
-			query += "        author_desc ";
-			query += " from author ";
+			query += " insert into book ";
+			query += " value(null, ?, ?, ?, ?) ";
 			// - 바인딩
 			pstmt = conn.prepareStatement(query);
-			
+			pstmt.setString(1, "title");
+			pstmt.setString(2, "pubs");
+			pstmt.setString(3, "2024/01/29");
+			pstmt.setString(4, "3");
 			// - 실행
-			rs = pstmt.executeQuery();
-			
+			int count = pstmt.executeUpdate();
+
 			// 4.결과처리
-			while (rs.next()) {
-				/*
-				// getInt(숫자/컬럼명), getString(숫자/컬럼명)
-				int id = rs.getInt("author_id");
-				String name = rs.getString("author_name");
-				String desc = rs.getString("author_desc");
-				*/
-				int id = rs.getInt(1);
-				String name = rs.getString(2);
-				String desc = rs.getString(3);
-				
-				System.out.println(id + "\t" + name + "\t" + desc);
-			}
-			
+			System.out.println(count + "건 등록 되었습니다.");
+
 		} catch (ClassNotFoundException e) {
 			System.out.println("error: 드라이버 로딩 실패 - " + e);
 		} catch (SQLException e) {
@@ -67,7 +59,6 @@ public class AuthorSelect {
 				System.out.println("error:" + e);
 			}
 		}
-
 	}
 
 }

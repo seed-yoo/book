@@ -1,11 +1,19 @@
 package com.javaex.author;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
-public class AuthorSelect {
+public class AuthorSelect2 {
 
 	public static void main(String[] args) {
 
+		List<AuthorVo> authorList = new ArrayList<AuthorVo>();
+		
 		// 번호 유영수 학원학생
 		// 0. import java.sql.*;
 		Connection conn = null;
@@ -14,7 +22,7 @@ public class AuthorSelect {
 		try {
 			// 1. JDBC 드라이버 (Oracle) 로딩
 			Class.forName("com.mysql.cj.jdbc.Driver");
-
+			
 			// 2. Connection 얻어오기
 			String url = "jdbc:mysql://localhost:3306/book_db";
 			conn = DriverManager.getConnection(url, "book", "book");
@@ -32,20 +40,30 @@ public class AuthorSelect {
 			// - 실행
 			rs = pstmt.executeQuery();
 			
-			// 4.결과처리
+			// 검색결과에서 데이터 꺼내기
 			while (rs.next()) {
-				/*
-				// getInt(숫자/컬럼명), getString(숫자/컬럼명)
-				int id = rs.getInt("author_id");
+				
+				int no = rs.getInt("author_id");
 				String name = rs.getString("author_name");
 				String desc = rs.getString("author_desc");
-				*/
-				int id = rs.getInt(1);
-				String name = rs.getString(2);
-				String desc = rs.getString(3);
 				
-				System.out.println(id + "\t" + name + "\t" + desc);
+				// Vo묶기
+				AuthorVo authorVo = new AuthorVo(no, name, desc);
+				
+				// 리스트에 추가
+				authorList.add(authorVo);
 			}
+			// 4.결과처리
+//			System.out.println(authorList.toString());
+			// 리스트를 이용해서 출력
+			for (int i = 0; i < authorList.size(); i++) {
+				int no = authorList.get(i).getAuthorId();
+				String name = authorList.get(i).getAuthorName();
+				String desc = authorList.get(i).getAuthorDesc();
+				
+				System.out.println(no + ".\t" + name + "\t" + desc);
+			}
+			
 			
 		} catch (ClassNotFoundException e) {
 			System.out.println("error: 드라이버 로딩 실패 - " + e);
